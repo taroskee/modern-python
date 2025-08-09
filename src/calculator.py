@@ -7,10 +7,10 @@ statistical calculations.
 """
 
 import math
-from typing import Any, Union
+from typing import Any
 
 
-Number = Union[int, float]
+Number = int | float
 
 
 class CalculatorError(Exception):

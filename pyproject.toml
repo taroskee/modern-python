@@ -241,6 +241,7 @@ ignore = [
     "PLR0913", # too many arguments
     "PGH003",  # blanket-type-ignore
     "RUF012",  # mutable class attributes
+    "TRY003",  # long messages in exception class
 ]
 
 fixable = ["ALL"]
