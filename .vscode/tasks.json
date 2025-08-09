@@ -1,0 +1,321 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install Dependencies",
+      "type": "shell",
+      "command": "uv sync",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "pytest",
+      "args": [
+        "-v",
+        "--tb=short",
+        "--color=yes"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        {
+          "owner": "pytest",
+          "pattern": [
+            {
+              "regexp": "^(.+):(\\d+):(\\d+):\\s+(.+)$",
+              "file": 1,
+              "line": 2,
+              "column": 3,
+              "message": 4
+            }
+          ]
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      }
+    },
+    {
+      "label": "Run Tests with Coverage",
+      "type": "shell",
+      "command": "pytest",
+      "args": [
+        "--cov=src",
+        "--cov-report=term-missing",
+        "--cov-report=html",
+        "-v"
+      ],
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "ruff",
+      "args": [
+        "format",
+        "."
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Lint Code",
+      "type": "shell",
+      "command": "ruff",
+      "args": [
+        "check",
+        ".",
+        "--fix"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        {
+          "owner": "ruff",
+          "pattern": [
+            {
+              "regexp": "^(.+):(\\d+):(\\d+):\\s+([A-Z]\\d+)\\s+(.+)$",
+              "file": 1,
+              "line": 2,
+              "column": 3,
+              "code": 4,
+              "message": 5
+            }
+          ]
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Type Check",
+      "type": "shell",
+      "command": "mypy",
+      "args": [
+        "src",
+        "--ignore-missing-imports"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        {
+          "owner": "mypy",
+          "pattern": [
+            {
+              "regexp": "^(.+):(\\d+):\\s+error:\\s+(.+)$",
+              "file": 1,
+              "line": 2,
+              "message": 3
+            }
+          ]
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Build Documentation",
+      "type": "shell",
+      "command": "sphinx-build",
+      "args": [
+        "-b",
+        "html",
+        "docs",
+        "docs/_build/html"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Clean Build Artifacts",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "build/",
+        "dist/",
+        "*.egg-info",
+        "**/__pycache__",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".mypy_cache",
+        "htmlcov",
+        ".coverage"
+      ],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "Remove-Item -Recurse -Force -ErrorAction SilentlyContinue build, dist, *.egg-info, __pycache__, .pytest_cache, .ruff_cache, .mypy_cache, htmlcov, .coverage"
+        ]
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Run Application",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "src.main"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "focus": true
+      }
+    },
+    {
+      "label": "Start Jupyter Server",
+      "type": "shell",
+      "command": "jupyter",
+      "args": [
+        "lab",
+        "--no-browser",
+        "--port=8888"
+      ],
+      "group": "none",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "isBackground": true
+    },
+    {
+      "label": "Pre-commit Install",
+      "type": "shell",
+      "command": "pre-commit",
+      "args": [
+        "install"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Pre-commit Run",
+      "type": "shell",
+      "command": "pre-commit",
+      "args": [
+        "run",
+        "--all-files"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Update Dependencies",
+      "type": "shell",
+      "command": "uv",
+      "args": [
+        "pip",
+        "compile",
+        "pyproject.toml",
+        "-o",
+        "requirements.txt",
+        "--upgrade"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Docker Build",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "-f",
+        ".devcontainer/docker-compose.yml",
+        "build"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Docker Up",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "-f",
+        ".devcontainer/docker-compose.yml",
+        "up",
+        "-d"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Docker Down",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "-f",
+        ".devcontainer/docker-compose.yml",
+        "down"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
+}

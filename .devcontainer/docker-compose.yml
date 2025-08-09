@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - USERNAME=vscode
+        - USER_UID=1000
+        - USER_GID=1000
+    
+    container_name: modern-python-dev
+    hostname: python-dev
+    
+    volumes:
+      # Mount workspace
+      - ..:/workspace:cached
+      
+      # Mount Docker socket for Docker-in-Docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+      # Persist extensions and settings
+      - vscode-extensions:/home/vscode/.vscode-server/extensions
+      - vscode-extensions-insiders:/home/vscode/.vscode-server-insiders/extensions
+      
+      # Persist command history
+      - command-history:/home/vscode/.bash_history
+      
+      # Persist git credentials
+      - git-credentials:/home/vscode/.git-credentials
+      
+      # Persist uv cache
+      - uv-cache:/home/vscode/.cache/uv
+      
+      # Persist pip cache
+      - pip-cache:/home/vscode/.cache/pip
+      
+      # Persist pytest cache
+      - pytest-cache:/workspace/.pytest_cache
+    
+    environment:
+      - TZ=Asia/Tokyo
+      - PYTHONPATH=/workspace
+      - UV_CACHE_DIR=/home/vscode/.cache/uv
+      - PIP_CACHE_DIR=/home/vscode/.cache/pip
+    
+    # Override the default command
+    command: sleep infinity
+    
+    # Network configuration
+    network_mode: bridge
+    
+    # Resource limits (adjust based on your system)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    
+    # Security options
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    
+    # Restart policy
+    restart: unless-stopped
+
+  # GitHub Self-hosted Runner (optional service)
+  runner:
+    build:
+      context: ../runner
+      dockerfile: Dockerfile
+    container_name: github-runner
+    hostname: github-runner
+    
+    volumes:
+      - runner-work:/home/runner/work
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    environment:
+      - RUNNER_NAME=modern-python-runner
+      - RUNNER_WORKDIR=/home/runner/work
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
+    
+    restart: unless-stopped
+    
+    depends_on:
+      - dev
+    
+    profiles:
+      - runner
+
+volumes:
+  vscode-extensions:
+    name: modern-python-vscode-extensions
+  vscode-extensions-insiders:
+    name: modern-python-vscode-extensions-insiders
+  command-history:
+    name: modern-python-command-history
+  git-credentials:
+    name: modern-python-git-credentials
+  uv-cache:
+    name: modern-python-uv-cache
+  pip-cache:
+    name: modern-python-pip-cache
+  pytest-cache:
+    name: modern-python-pytest-cache
+  runner-work:
+    name: modern-python-runner-work
+
+networks:
+  default:
+    name: modern-python-network
+    driver: bridge
