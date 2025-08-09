@@ -56,7 +56,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install uv (Rust-based Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    mv /root/.cargo/bin/uv /usr/local/bin/
+    . /root/.cargo/env && \
+    mv /root/.cargo/bin/uv /usr/local/bin/ && \
+    chmod +x /usr/local/bin/uv
 
 # Create non-root user
 ARG USERNAME=vscode
