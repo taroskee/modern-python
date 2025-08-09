@@ -8,4 +8,5 @@ __email__ = "team@example.com"
 
 from src.calculator import Calculator
 
+
 __all__ = ["Calculator", "__version__"]

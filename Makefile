@@ -193,6 +193,31 @@ pre-commit-run: ## Run pre-commit on all files
 	@echo "Running pre-commit..."
 	@pre-commit run --all-files
 
+# GitHub Actions
+.PHONY: ci-status
+ci-status: ## Check GitHub Actions CI status
+	@echo "Recent GitHub Actions workflow runs:"
+	@gh run list --limit 5
+
+.PHONY: ci-view
+ci-view: ## View latest CI run details
+	@echo "Latest CI run details:"
+	@gh run view
+
+.PHONY: ci-watch
+ci-watch: ## Watch current CI run
+	@gh run watch
+
+.PHONY: workflow-list
+workflow-list: ## List all workflows
+	@echo "Available workflows:"
+	@gh workflow list
+
+.PHONY: pr-status
+pr-status: ## Check pull request status
+	@echo "Pull request status:"
+	@gh pr status
+
 # Development workflow
 .PHONY: dev
 dev: install lint test ## Run development workflow

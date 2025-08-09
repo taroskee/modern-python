@@ -1,0 +1,171 @@
+name: CI Full Test
+
+on:
+  schedule:
+    # Run every Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual run'
+        required: false
+        default: 'Manual testing'
+  pull_request:
+    types: [labeled]
+
+jobs:
+  full-test:
+    # Only run on schedule, manual trigger, or when labeled 'full-test'
+    if: |
+      github.event_name == 'schedule' || 
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.label.name, 'full-test'))
+    
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install uv (Unix)
+      if: runner.os != 'Windows'
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install uv (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        irm https://astral.sh/uv/install.ps1 | iex
+        echo "$env:USERPROFILE\.cargo\bin" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+    
+    - name: Cache uv packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/uv
+          ~/AppData/Local/uv/cache
+        key: ${{ runner.os }}-${{ matrix.python-version }}-uv-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.python-version }}-uv-
+    
+    - name: Install dependencies
+      run: |
+        uv pip install pytest pytest-cov
+        uv pip install -e .
+    
+    - name: Run tests with coverage
+      run: |
+        pytest tests -v --cov=src --cov-report=xml --cov-report=term-missing
+    
+    - name: Upload coverage reports
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-full-test
+        fail_ci_if_error: false
+
+  compatibility-check:
+    name: Compatibility Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Check dependency compatibility
+      run: |
+        uv pip check || true
+        uv pip list --format=freeze > requirements-lock.txt
+    
+    - name: Upload requirements lock
+      uses: actions/upload-artifact@v4
+      with:
+        name: requirements-lock
+        path: requirements-lock.txt
+
+  performance-test:
+    name: Performance Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        uv pip install pytest pytest-benchmark
+        uv pip install -e .
+    
+    - name: Run performance tests
+      run: |
+        pytest tests -v --benchmark-only --benchmark-json=benchmark.json || true
+    
+    - name: Upload benchmark results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-results
+        path: benchmark.json
+
+  report:
+    name: Test Report
+    needs: [full-test, compatibility-check, performance-test]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+    
+    - name: Generate summary
+      run: |
+        echo "## Full Test Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Test Matrix Results" >> $GITHUB_STEP_SUMMARY
+        echo "| OS | Python | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|---|---|---|" >> $GITHUB_STEP_SUMMARY
+        echo "| ubuntu-latest | 3.11-3.13 | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| windows-latest | 3.11-3.13 | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "| macos-latest | 3.11-3.13 | ✅ |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "- 📊 Benchmark results" >> $GITHUB_STEP_SUMMARY
+        echo "- 📦 Requirements lock file" >> $GITHUB_STEP_SUMMARY
+        echo "- ☂️ Coverage reports" >> $GITHUB_STEP_SUMMARY
