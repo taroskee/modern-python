@@ -9,7 +9,6 @@ import pytest
 
 from src.calculator import (
     Calculator,
-    CalculatorError,
     DivisionByZeroError,
     InvalidOperationError,
 )
@@ -226,7 +225,7 @@ class TestCalculatorInputValidation:
         """Set up test fixtures."""
         self.calc = Calculator()
 
-    @pytest.mark.parametrize("a,b", [
+    @pytest.mark.parametrize(("a", "b"), [
         ("5", 3),
         (5, "3"),
         ("5", "3"),
@@ -240,12 +239,12 @@ class TestCalculatorInputValidation:
         with pytest.raises(TypeError):
             self.calc.add(a, b)
 
-    @pytest.mark.parametrize("a,b", [
-        (float('inf'), 1),
-        (1, float('inf')),
-        (float('-inf'), 1),
-        (float('nan'), 1),
-        (1, float('nan')),
+    @pytest.mark.parametrize(("a", "b"), [
+        (float("inf"), 1),
+        (1, float("inf")),
+        (float("-inf"), 1),
+        (float("nan"), 1),
+        (1, float("nan")),
     ])
     def test_operations_with_special_floats(self, a: float, b: float):
         """Test operations with special float values."""
@@ -303,7 +302,7 @@ class TestCalculatorStatistics:
         assert self.calc.mode([5]) == 5
 
 
-@pytest.mark.unit
+@pytest.mark.unit()
 class TestCalculatorUnitTests:
     """Marker for unit tests."""
 
@@ -311,13 +310,13 @@ class TestCalculatorUnitTests:
         """Test calculator instance creation."""
         calc = Calculator()
         assert calc is not None
-        assert hasattr(calc, 'add')
-        assert hasattr(calc, 'subtract')
-        assert hasattr(calc, 'multiply')
-        assert hasattr(calc, 'divide')
+        assert hasattr(calc, "add")
+        assert hasattr(calc, "subtract")
+        assert hasattr(calc, "multiply")
+        assert hasattr(calc, "divide")
 
 
-@pytest.mark.integration
+@pytest.mark.integration()
 class TestCalculatorIntegration:
     """Integration tests for calculator."""
 
