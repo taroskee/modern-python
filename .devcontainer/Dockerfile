@@ -55,11 +55,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv (Rust-based Python package manager)
-ENV CARGO_HOME=/root/.cargo
-ENV PATH=$CARGO_HOME/bin:$PATH
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    cp /root/.cargo/bin/uv /usr/local/bin/ && \
-    chmod +x /usr/local/bin/uv
+# Copy uv binary from official distroless image
+COPY --from=ghcr.io/astral-sh/uv:0.8.7 /uv /uvx /bin/
 
 # Create non-root user
 ARG USERNAME=vscode
