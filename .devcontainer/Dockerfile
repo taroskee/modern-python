@@ -83,6 +83,14 @@ RUN uv tool install ruff && \
 # Add UV tools to PATH
 ENV PATH="/root/.local/bin:${PATH}"
 
+# Pre-download common Python packages as root (optional optimization)
+# Note: Keeping minimal packages to avoid compatibility issues with Python 3.13
+RUN uv pip install --system \
+    requests \
+    python-dotenv \
+    click \
+    tqdm
+
 # Create workspace directory
 RUN mkdir -p /workspace && \
     chown -R $USERNAME:$USERNAME /workspace
@@ -108,14 +116,6 @@ RUN echo 'export PATH="/home/vscode/.local/bin:$PATH"' >> /home/vscode/.bashrc &
 RUN git config --global init.defaultBranch main && \
     git config --global core.editor vim && \
     git config --global pull.rebase false
-
-# Pre-download common Python packages (optional optimization)
-# Note: Keeping minimal packages to avoid compatibility issues with Python 3.13
-RUN uv pip install --system \
-    requests \
-    python-dotenv \
-    click \
-    tqdm
 
 # Expose common ports
 EXPOSE 8000 8080 8888 5000 3000
