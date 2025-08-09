@@ -135,15 +135,16 @@ myst_heading_anchors = 3
 # -- Options for coverage extension ------------------------------------------
 coverage_show_missing_items = True
 
+
 # -- Custom setup ------------------------------------------------------------
 def setup(app):
     """Custom Sphinx setup."""
     app.add_css_file("custom.css")
-    
+
     # Create _static directory if it doesn't exist
     static_dir = Path(__file__).parent / "_static"
     static_dir.mkdir(exist_ok=True)
-    
+
     # Create custom CSS file
     custom_css = static_dir / "custom.css"
     if not custom_css.exists():

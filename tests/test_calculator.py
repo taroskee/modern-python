@@ -108,7 +108,7 @@ class TestCalculatorAdvancedOperations:
     def test_power_fractional_exponent(self):
         """Test power operation with fractional exponent."""
         assert self.calc.power(4, 0.5) == 2
-        assert self.calc.power(27, 1/3) == pytest.approx(3)
+        assert self.calc.power(27, 1 / 3) == pytest.approx(3)
 
     def test_sqrt_positive_numbers(self):
         """Test square root of positive numbers."""
@@ -202,12 +202,7 @@ class TestCalculatorChainOperations:
 
     def test_chain_with_power(self):
         """Test chaining with power operation."""
-        result = (
-            self.calc.chain(2)
-            .chain_power(3)
-            .chain_add(2)
-            .get_result()
-        )
+        result = self.calc.chain(2).chain_power(3).chain_add(2).get_result()
         assert result == 10
 
     def test_chain_reset(self):
@@ -225,27 +220,33 @@ class TestCalculatorInputValidation:
         """Set up test fixtures."""
         self.calc = Calculator()
 
-    @pytest.mark.parametrize(("a", "b"), [
-        ("5", 3),
-        (5, "3"),
-        ("5", "3"),
-        (None, 5),
-        (5, None),
-        ([], 5),
-        ({}, 5),
-    ])
+    @pytest.mark.parametrize(
+        ("a", "b"),
+        [
+            ("5", 3),
+            (5, "3"),
+            ("5", "3"),
+            (None, 5),
+            (5, None),
+            ([], 5),
+            ({}, 5),
+        ],
+    )
     def test_add_invalid_types(self, a: Any, b: Any):
         """Test that invalid types raise TypeError."""
         with pytest.raises(TypeError):
             self.calc.add(a, b)
 
-    @pytest.mark.parametrize(("a", "b"), [
-        (float("inf"), 1),
-        (1, float("inf")),
-        (float("-inf"), 1),
-        (float("nan"), 1),
-        (1, float("nan")),
-    ])
+    @pytest.mark.parametrize(
+        ("a", "b"),
+        [
+            (float("inf"), 1),
+            (1, float("inf")),
+            (float("-inf"), 1),
+            (float("nan"), 1),
+            (1, float("nan")),
+        ],
+    )
     def test_operations_with_special_floats(self, a: float, b: float):
         """Test operations with special float values."""
         # These should not raise errors but handle gracefully

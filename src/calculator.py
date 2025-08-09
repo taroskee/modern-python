@@ -132,7 +132,7 @@ class Calculator:
             TypeError: If arguments are not numbers
         """
         self._validate_numbers(base, exponent)
-        return float(base ** exponent)
+        return float(base**exponent)
 
     def sqrt(self, n: Number) -> float:
         """
@@ -150,7 +150,9 @@ class Calculator:
         """
         self._validate_number(n)
         if n < 0:
-            raise InvalidOperationError("Cannot calculate square root of negative number")
+            raise InvalidOperationError(
+                "Cannot calculate square root of negative number"
+            )
         return math.sqrt(n)
 
     def factorial(self, n: Number) -> int:
@@ -429,8 +431,8 @@ class Calculator:
         n = len(sorted_numbers)
 
         if n % 2 == 0:
-            return (sorted_numbers[n//2 - 1] + sorted_numbers[n//2]) / 2
-        return sorted_numbers[n//2]
+            return (sorted_numbers[n // 2 - 1] + sorted_numbers[n // 2]) / 2
+        return sorted_numbers[n // 2]
 
     def mode(self, numbers: list[Number]) -> Number:
         """
