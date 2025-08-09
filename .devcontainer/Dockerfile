@@ -55,9 +55,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv (Rust-based Python package manager)
+ENV CARGO_HOME=/root/.cargo
+ENV PATH=$CARGO_HOME/bin:$PATH
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    . /root/.cargo/env && \
-    mv /root/.cargo/bin/uv /usr/local/bin/ && \
+    cp /root/.cargo/bin/uv /usr/local/bin/ && \
     chmod +x /usr/local/bin/uv
 
 # Create non-root user
