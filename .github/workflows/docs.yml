@@ -1,0 +1,206 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'src/**'
+      - '*.md'
+      - '*.rst'
+      - 'pyproject.toml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'src/**'
+      - '*.md'
+      - '*.rst'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for git info in docs
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Cache uv packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/uv
+        key: ${{ runner.os }}-uv-docs-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-uv-docs-
+    
+    - name: Install dependencies
+      run: |
+        uv pip install -e ".[docs]"
+        uv pip install sphinx-autobuild
+    
+    - name: Build HTML documentation
+      run: |
+        cd docs
+        make clean
+        make html
+    
+    - name: Check for broken links
+      run: |
+        cd docs
+        make linkcheck
+      continue-on-error: true
+    
+    - name: Build PDF documentation
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+        cd docs
+        make latexpdf
+      continue-on-error: true
+    
+    - name: Upload HTML documentation
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-docs
+        path: docs/_build/html/
+    
+    - name: Upload PDF documentation
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pdf-docs
+        path: docs/_build/latex/*.pdf
+      continue-on-error: true
+
+  test-docs:
+    name: Test Documentation
+    runs-on: ubuntu-latest
+    needs: build-docs
+    timeout-minutes: 10
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        uv pip install -e ".[docs]"
+    
+    - name: Run doctest
+      run: |
+        cd docs
+        make doctest
+    
+    - name: Check documentation coverage
+      run: |
+        cd docs
+        make coverage
+        cat _build/coverage/python.txt
+
+  deploy-preview:
+    name: Deploy Documentation Preview
+    runs-on: ubuntu-latest
+    needs: build-docs
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download documentation artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: html-docs
+        path: ./preview
+    
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v2
+      with:
+        publish-dir: ./preview
+        production-deploy: false
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        deploy-message: "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+        enable-pull-request-comment: true
+        enable-commit-comment: false
+        overwrites-pull-request-comment: true
+        alias: pr-${{ github.event.pull_request.number }}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      timeout-minutes: 5
+
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [build-docs, test-docs]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 10
+    
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download documentation artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: html-docs
+        path: ./public
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./public
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+    
+    - name: Deploy to Read the Docs
+      if: success()
+      run: |
+        curl -X POST \
+          -H "Authorization: Token ${{ secrets.READTHEDOCS_TOKEN }}" \
+          https://readthedocs.org/api/v3/projects/modern-python/versions/latest/builds/
+      continue-on-error: true
+    
+    - name: Update documentation badge
+      run: |
+        echo "Documentation deployed successfully!"
+        echo "View at: ${{ steps.deployment.outputs.page_url }}"
