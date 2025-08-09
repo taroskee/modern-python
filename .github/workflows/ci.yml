@@ -11,6 +11,10 @@ env:
   PYTHON_VERSION: "3.13"
   UV_SYSTEM_PYTHON: 1
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   lint:
     name: Lint Code
