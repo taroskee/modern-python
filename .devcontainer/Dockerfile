@@ -77,7 +77,7 @@ RUN uv tool install ruff && \
     uv tool install pytest && \
     uv tool install sphinx && \
     uv tool install ipython && \
-    uv tool install jupyter && \
+    uv tool install jupyterlab && \
     uv tool install pre-commit
 
 # Add UV tools to PATH
