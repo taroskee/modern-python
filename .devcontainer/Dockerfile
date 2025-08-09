@@ -110,13 +110,10 @@ RUN git config --global init.defaultBranch main && \
     git config --global pull.rebase false
 
 # Pre-download common Python packages (optional optimization)
+# Note: Keeping minimal packages to avoid compatibility issues with Python 3.13
 RUN uv pip install --system \
     requests \
-    httpx \
-    pydantic \
     python-dotenv \
-    rich \
-    typer \
     click \
     tqdm
 
