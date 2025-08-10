@@ -20,7 +20,7 @@
 - **uv**: Rust製の超高速パッケージマネージャー
 - **Ruff**: Rust製の高速リンター/フォーマッター
 - **pytest**: Pythonのデファクトスタンダードテストフレームワーク
-- **ty**: 軽量な型チェッカー
+- **Pyright**: Microsoftの高速型チェッカー（Pylance基盤）
 - **Sphinx**: 公式ドキュメント生成ツール
 
 ### CI/CD
@@ -53,6 +53,27 @@ code .
 
 # 4. コンテナが起動したら開発開始！
 ```
+
+### Pre-commitフックの設定（推奨）
+
+```bash
+# pre-commitをインストール
+pip install pre-commit
+
+# フックをインストール
+pre-commit install
+
+# 手動で全ファイルをチェック（初回のみ）
+pre-commit run --all-files
+```
+
+Pre-commitフックにより、コミット時に自動的に以下がチェックされます：
+- コードフォーマット (Ruff)
+- リント (Ruff)
+- 型チェック (Pyright)
+- セキュリティチェック (Bandit)
+- シークレット検出
+- その他の品質チェック
 
 ## 🎯 使い方
 

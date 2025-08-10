@@ -51,9 +51,9 @@ format-check: ## Check code formatting
 	@ruff format --check .
 
 .PHONY: type
-type: ## Run type checker (mypy)
+type: ## Run type checker (Pyright)
 	@echo "Running type checker..."
-	@mypy src --ignore-missing-imports
+	@pyright src
 
 .PHONY: security
 security: ## Run security checks

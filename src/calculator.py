@@ -151,7 +151,7 @@ class Calculator:
         self._validate_number(n)
         if n < 0:
             raise InvalidOperationError(
-                "Cannot calculate square root of negative number"
+                "Cannot calculate square root of negative number",
             )
         return math.sqrt(n)
 
