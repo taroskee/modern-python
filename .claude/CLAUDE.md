@@ -31,7 +31,7 @@ Modern Python開発環境は、Docker と VSCode DevContainer を使用した、
 - `make test` - pytestでテストを実行
 - `make lint` - Ruffでコードをチェック
 - `make format` - Ruffでコードをフォーマット
-- `make typecheck` - mypyで型チェック（利用可能な場合）
+- `make type` - Pyrightで型チェック
 - `make all` - すべての品質チェックを実行
 
 ### パッケージ管理
@@ -49,42 +49,6 @@ Modern Python開発環境は、Docker と VSCode DevContainer を使用した、
 - `gh run view [RUN_ID]` - 特定の実行の詳細を確認
 - `make ci-status` - CI状況を確認（Makefileに定義されている場合）
 
-## アーキテクチャ概要
-
-### 技術スタック
-- **言語**: Python 3.13（最新の言語機能とパフォーマンス）
-- **コンテナ**: Docker + VSCode DevContainer
-- **パッケージ管理**: uv（Rust製高速パッケージマネージャー）
-- **品質管理**: Ruff（リンター/フォーマッター）、pytest（テスト）、mypy（型チェック）
-- **CI/CD**: GitHub Actions + Self-hosted Runner
-- **ドキュメント**: Sphinx
-
-### 開発環境の特徴
-
-1. **OS非依存性**
-   - Docker Containerにより Windows/macOS/Linux で統一された開発体験
-   - DevContainerで即座に開発開始可能
-
-2. **高速実行**
-   - Rust製ツール（uv, Ruff）による圧倒的な速度
-   - キャッシュを活用した効率的なビルド
-
-3. **品質保証**
-   - TDD（テスト駆動開発）の実践
-   - CI/CDパイプラインによる継続的な品質管理
-   - Pre-commitフック（導入予定）によるローカル品質チェック
-
-## プロジェクト構成概要
-
-詳細なコンポーネント構成については `c4-architecture.md` を参照してください。主な場所：
-
-- `src/` - Pythonソースコード
-- `tests/` - pytestテストコード
-- `.devcontainer/` - DevContainer設定とDockerfile
-- `.github/workflows/` - GitHub Actions CI/CD設定
-- `docs/` - Sphinxドキュメント
-- `pyproject.toml` - プロジェクト設定と依存関係
-- `Makefile` - タスク自動化
 
 ## 開発のベストプラクティス
 
@@ -111,25 +75,7 @@ Modern Python開発環境は、Docker と VSCode DevContainer を使用した、
 
 詳細は `technical_considerations.md` を参照してください。
 
-## 現在の課題と改善計画
-
-### 解決済みの主要課題
-- ✅ Docker環境構築（uvインストール方法の確立）
-- ✅ CI/CDパイプライン（GitHub Actions最適化）
-- ✅ GHCR権限問題（Public設定とpermissions追加）
-
-### 進行中の改善
-- 🔄 コード品質ゲートの強化
-  - Pre-commitフックの導入
-  - ブランチ保護ルールの設定
-  - CI品質チェックの厳格化
-
-### 今後の計画
-- [ ] CONTRIBUTING.mdの作成
-- [ ] Self-hosted Runnerの導入
-- [ ] パフォーマンステストの自動化
-
-詳細は `project_plan_phase_1.md` と `TODO.md` を参照してください。
+詳細なプロジェクト状況は `project_plan_phase_1.md` を参照してください。
 
 ## 重要な注意事項
 

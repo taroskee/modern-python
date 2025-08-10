@@ -81,13 +81,13 @@ repos:
         types: [python]
         pass_filenames: true
       
-      - id: mypy
+      - id: pyright
         name: Type checking
-        entry: mypy
-        language: system
+        entry: pyright
+        language: node
         types: [python]
         pass_filenames: false
-        args: [--ignore-missing-imports]
+        additional_dependencies: ['pyright@1.1.370']
       
       - id: pytest-check
         name: Run tests
