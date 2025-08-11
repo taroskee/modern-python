@@ -49,17 +49,41 @@ env:
 
 **推奨される解決策**:
 
-#### 1. ブランチ保護ルールの設定（GitHub UI）
+#### 1. ブランチ保護ルールの設定（GitHub UI）✅ 実施済み（2025-08-11）
+
+**設定内容**:
 ```
 Settings → Branches → Add rule
 - Branch name pattern: main
+- ☑ Restrict deletions (ブランチ削除を禁止)
+- ☑ Require linear history (マージコミット禁止、リベースのみ)
 - ☑ Require a pull request before merging
+  - Required approving reviews: 0 (個人開発のため)
+  - ☑ Dismiss stale pull request approvals when new commits are pushed
+  - ☑ Require review from CODEOWNERS (将来のチーム開発準備)
 - ☑ Require status checks to pass before merging
   - ☑ Require branches to be up to date before merging
-  - Status checks: lint, test
-- ☑ Require conversation resolution before merging
-- ☑ Do not allow bypassing the above settings
+  - Required status checks:
+    * Lint Code
+    * Performance Test
+    * Test Documentation
+    * Test Python
+    * Build Distribution
+    * Security Scan
+- ☑ Block force pushes (履歴の書き換えを防止)
 ```
+
+**設定理由**:
+- **リニアヒストリー**: 履歴を見やすく保ち、デバッグを容易にする
+- **PR必須**: コード変更の追跡性と品質保証
+- **ステータスチェック必須**: 壊れたコードのmainブランチ混入防止
+- **force push禁止**: 履歴の整合性維持
+- **削除禁止**: 誤操作によるmainブランチ削除を防止
+
+**影響**:
+- 全ての変更はfeatureブランチ→PR→レビュー→マージの流れが必須
+- マージ前に必ずCIが成功する必要がある
+- 履歴が一直線になり、git logが読みやすくなる
 
 #### 2. Pre-commitフックの導入
 ```yaml
@@ -585,7 +609,7 @@ requirements-common.txt実装後、通常のCIが失敗：
 - [ ] セキュリティスキャンの強化
 - [ ] パフォーマンステストの自動化
 - [ ] ~~GitHub Container Registry権限設定の最適化~~ ✅ 解決済み
-- [ ] ブランチ保護ルールの設定
+- [ ] ~~ブランチ保護ルールの設定~~ ✅ 解決済み（2025-08-11）
 - [ ] ~~Pre-commitフックの導入~~ ✅ 解決済み
 - [ ] 開発フローのドキュメント化（CONTRIBUTING.md）
 - [ ] ~~CI品質チェックの厳格化（continue-on-errorの削除）~~ ✅ 解決済み

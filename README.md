@@ -151,29 +151,46 @@ bash scripts/setup.sh
 
 ### 開発フロー
 
-1. **機能ブランチを作成**
+**注意**: mainブランチは保護されており、直接pushはできません。必ずPR経由で変更を行ってください。
+
+1. **最新のmainを取得**
+   ```bash
+   git checkout main
+   git pull --rebase origin main
+   ```
+
+2. **機能ブランチを作成**
    ```bash
    git checkout -b feature/your-feature
    ```
 
-2. **TDDサイクルで開発**
+3. **TDDサイクルで開発**
    - RED: 失敗するテストを書く
    - GREEN: テストを通す最小限の実装
    - REFACTOR: コードを改善
 
-3. **品質チェック**
+4. **品質チェック**
    ```bash
    make all
    ```
 
-4. **コミット**
+5. **コミット**
    ```bash
    git add .
    git commit -m "feat: your feature description"
    ```
 
-5. **プルリクエスト作成**
-   - GitHub ActionsでCI/CDが自動実行
+6. **mainの最新を取り込み（リベース）**
+   ```bash
+   git fetch origin main
+   git rebase origin/main
+   ```
+
+7. **プルリクエスト作成**
+   - featureブランチをpush
+   - GitHub UIでPRを作成
+   - 全てのステータスチェック（CI）が成功するまで待つ
+   - マージ（リニアヒストリーを保つため、Squash and mergeまたはRebase and mergeを使用）
 
 ## 📁 プロジェクト構造
 
