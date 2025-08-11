@@ -322,6 +322,46 @@ make ci-watch      # 実行中のCIを監視
 3. **バージョン非互換**: 最新版が常に最良とは限らない
 4. **環境差異**: ローカルとCIの環境差による失敗
 
+## GitHub Actions CI環境での注意点
+
+### uvコマンドの仮想環境要件
+**問題**: Documentation CI実行時にuvコマンドが失敗
+```
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+```
+
+**原因**: GitHub Actions環境では仮想環境が存在しないため、uvが期待する環境と異なる
+
+**解決策**: `--system`フラグを追加
+```yaml
+# ❌ 失敗する
+uv pip install -e ".[docs]"
+
+# ✅ 正しい方法  
+uv pip install --system -e ".[docs]"
+```
+
+**教訓**: CI環境では常に`--system`フラグの必要性を検討する
+
+### CodeQL Action v3移行
+**問題**: Docker CI実行時にCodeQL Action v2の廃止警告
+```
+CodeQL Action major versions v1 and v2 have been deprecated. Please update all occurrences of the CodeQL Action in your workflow files to v3.
+```
+
+**発生日**: 2025年1月10日以降
+
+**解決策**: 
+```yaml
+# ❌ 廃止されたバージョン
+uses: github/codeql-action/upload-sarif@v2
+
+# ✅ 最新バージョン
+uses: github/codeql-action/upload-sarif@v3
+```
+
+**影響範囲**: Trivyスキャン結果のGitHub Security tabへのアップロード
+
 ## GitHub Container Registry (GHCR) 設定
 
 ### パッケージ権限エラー
