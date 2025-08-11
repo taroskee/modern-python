@@ -136,6 +136,32 @@
 - `pair_programming.md` - ペアプログラミングワークフロー
 - `project_plan_phase_1.md` - プロジェクト計画（本ファイル）
 
+### タスク1.2.5: GitHub Pagesの有効化と公開
+**ステータス:** 🔄 **進行中**
+
+**目的:** プロジェクトドキュメントの自動公開
+
+**背景:**
+- リポジトリがpublicになりGitHub Pagesが利用可能に
+- docs.ymlには既にデプロイ設定が存在
+- GitHub UIでの有効化が必要
+
+**実施内容:**
+1. **GitHub設定での有効化**（2025-08-11実施）
+   - ✅ Settings → Pages → Source を "GitHub Actions" に設定
+   - ✅ 環境名: github-pages（既にdocs.ymlで定義済み）
+
+2. **初回デプロイのトリガー**（2025-08-11実施）
+   - ✅ ドキュメントの更新を行いmainブランチへpush
+   - ✅ GitHub Pagesバッジの追加
+
+3. **動作確認**
+   - デプロイ成功の確認（進行中）
+   - https://taroskee.github.io/modern-python/ でアクセス確認
+
+**URL:**
+- Documentation: https://taroskee.github.io/modern-python/
+
 ---
 
 ## フェーズ1.3: 品質管理強化（進行中）
@@ -376,6 +402,7 @@
 - ✅ CI設定の改善（continue-on-error削除）
 
 ### 進行中/保留中タスク
+- 🔄 GitHub Pagesの有効化と公開
 - ⏳ ブランチ保護ルール設定
 - ⏳ CONTRIBUTING.md作成
 - ⏳ ユーザーライブラリ管理システム実装（requirements.txt対応）
@@ -386,7 +413,7 @@
 ### 達成指標
 - **基盤構築**: 100% 完了
 - **CI/CDパイプライン**: 100% 完了
-- **ドキュメント**: 85% 完了（CONTRIBUTING.md が未作成）
+- **ドキュメント**: 90% 完了（GitHub Pages公開中、CONTRIBUTING.md が未作成）
 - **品質管理**: 75% 完了（ブランチ保護ルールが未実装）
 - **パフォーマンス**: 0% 完了（計画段階）
 

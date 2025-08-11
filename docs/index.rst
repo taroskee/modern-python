@@ -13,6 +13,10 @@ Modern Python Development Environment
    :target: https://github.com/astral-sh/ruff
    :alt: Code style: Ruff
 
+.. image:: https://img.shields.io/badge/Docs-GitHub%20Pages-brightgreen.svg
+   :target: https://taroskee.github.io/modern-python/
+   :alt: Documentation
+
 Modern Python開発環境へようこそ！このプロジェクトは、Docker + VSCode DevContainerを使用した
 OS非依存のPython開発環境を提供します。
 
@@ -61,7 +65,7 @@ OS非依存のPython開発環境を提供します。
 
 1. リポジトリをクローン::
 
-    git clone https://github.com/your-org/modern-python.git
+    git clone https://github.com/taroskee/modern-python.git
     cd modern-python
 
 2. VSCodeで開く::

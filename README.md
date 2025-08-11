@@ -1,6 +1,16 @@
 # Modern Python Development Environment
 
+[![Documentation](https://img.shields.io/badge/Docs-GitHub%20Pages-brightgreen.svg)](https://taroskee.github.io/modern-python/)
+[![Python 3.13](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org)
+[![Code style: Ruff](https://img.shields.io/badge/Code%20Style-Ruff-black.svg)](https://github.com/astral-sh/ruff)
+
 モダンPythonフレームワークとGitHubセルフホストランナーをDockerで構築する開発環境
+
+## 📚 ドキュメント
+
+- 📖 **[オンラインドキュメント](https://taroskee.github.io/modern-python/)** - 最新のAPIドキュメントとガイド
+- 🏗️ **[アーキテクチャ](c4-architecture.md)** - システム設計と技術選定
+- 🔧 **[技術的考察](technical_considerations.md)** - 実装の詳細と解決策
 
 ## 🚀 特徴
 
@@ -26,10 +36,6 @@
 ### CI/CD
 - **GitHub Actions**: 自動化されたワークフロー
 - **Self-hosted Runner**: ローカル実行による高速ビルド
-
-## 🏗️ アーキテクチャ
-
-詳細は[C4アーキテクチャ図](c4-architecture.md)を参照してください。
 
 ## 📦 インストール
 
