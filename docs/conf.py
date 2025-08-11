@@ -27,6 +27,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.githubpages",
+    "sphinx.ext.doctest",
     "sphinx_autodoc_typehints",
     "myst_parser",
 ]

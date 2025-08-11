@@ -360,7 +360,40 @@ uses: github/codeql-action/upload-sarif@v2
 uses: github/codeql-action/upload-sarif@v3
 ```
 
+**重要**: CodeQL Action v3には`security-events: write`権限が必要
+```yaml
+permissions:
+  contents: read
+  packages: write
+  security-events: write  # ← 必須
+```
+
+**エラー内容**: 権限がない場合のエラー
+```
+Resource not accessible by integration - https://docs.github.com/rest/actions/workflow-runs#get-a-workflow-run
+```
+
 **影響範囲**: Trivyスキャン結果のGitHub Security tabへのアップロード
+
+### Sphinx doctestビルダー要件
+**問題**: Documentation CI実行時にdoctestビルダーが見つからない
+```
+Builder name doctest not registered or available through entry point
+```
+
+**原因**: Sphinxのdoctestビルダーには専用の拡張機能が必要
+
+**解決策**: docs/conf.pyのextensionsリストに追加
+```python
+extensions = [
+    # 他の拡張機能...
+    "sphinx.ext.doctest",  # ← 追加
+    "sphinx_autodoc_typehints",
+    "myst_parser",
+]
+```
+
+**教訓**: Sphinxの各ビルダーには対応する拡張機能が必要な場合がある
 
 ## GitHub Container Registry (GHCR) 設定
 
