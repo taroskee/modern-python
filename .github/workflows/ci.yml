@@ -53,6 +53,10 @@ jobs:
       run: |
         uv pip install ruff
         npm install -g pyright
+        # Install common libraries for type checking
+        if [ -f requirements-common.txt ]; then
+          uv pip install -r requirements-common.txt
+        fi
     
     - name: Run Ruff linter
       run: ruff check . --output-format=github
@@ -95,6 +99,10 @@ jobs:
       run: |
         uv pip install pytest pytest-cov
         uv pip install -e .
+        # Install common libraries for testing
+        if [ -f requirements-common.txt ]; then
+          uv pip install -r requirements-common.txt
+        fi
     
     - name: Run tests with coverage
       run: |

@@ -532,6 +532,51 @@ jobs:
 - CI/CDでライブラリの完全性を自動検証
 - requirements-common.txt変更時の自動ビルド（pathトリガー設定済み）
 
+## CI環境でのrequirements-common.txt問題（2025-08-11発見）
+
+### 問題
+requirements-common.txt実装後、通常のCIが失敗：
+
+1. **Ruffフォーマットエラー**
+   - test_setup.pyで長い行のフォーマット違反
+   - CI実行時に`ruff format --check`で失敗
+
+2. **COM812ルール競合**
+   - COM812（末尾カンマ強制）がフォーマッターと競合
+   - 警告: "The following rule may cause conflicts when used with the formatter: COM812"
+
+3. **requirements-common.txt未インストール**
+   - CIのtest/lintジョブでrequirements-common.txtがインストールされていない
+   - 将来的にpandas等を使うコードを追加した場合、CI失敗が確実
+
+### 解決策
+
+1. **test_setup.pyのフォーマット修正**
+   ```python
+   # Ruffが提案する通りに改行
+   assert requirements_example.is_file(), (
+       "requirements-dev.txt.example is not a file"
+   )
+   ```
+
+2. **COM812ルールの無効化**
+   ```toml
+   [tool.ruff.lint]
+   ignore = ["COM812"]  # 末尾カンマ強制を無効化（フォーマッター競合回避）
+   ```
+
+3. **ci.ymlでrequirements-common.txtインストール**
+   ```yaml
+   # testジョブとlintジョブ両方に追加
+   if [ -f requirements-common.txt ]; then
+     uv pip install -r requirements-common.txt
+   fi
+   ```
+
+### 重要性
+- requirements-common.txt未インストールは将来的な破壊的問題
+- COM812無効化でフォーマッター安定性向上
+
 ## 今後の改善点
 
 ### 検討事項

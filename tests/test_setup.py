@@ -30,7 +30,9 @@ class TestSetupScript:
         """Test that requirements-dev.txt.example exists."""
         requirements_example = Path("requirements-dev.txt.example")
         assert requirements_example.exists(), "requirements-dev.txt.example not found"
-        assert requirements_example.is_file(), "requirements-dev.txt.example is not a file"
+        assert requirements_example.is_file(), (
+            "requirements-dev.txt.example is not a file"
+        )
 
     def test_requirements_dev_in_gitignore(self):
         """Test that requirements-dev.txt is in .gitignore."""
@@ -39,7 +41,9 @@ class TestSetupScript:
 
         with gitignore.open() as f:
             content = f.read()
-            assert "requirements-dev.txt" in content, "requirements-dev.txt not in .gitignore"
+            assert "requirements-dev.txt" in content, (
+                "requirements-dev.txt not in .gitignore"
+            )
 
     def test_requirements_common_content(self):
         """Test that requirements-common.txt contains expected libraries."""
@@ -60,7 +64,9 @@ class TestSetupScript:
 
             # Check for usage instructions
             assert "How to use:" in content, "Usage instructions not found"
-            assert "cp requirements-dev.txt.example requirements-dev.txt" in content, "Copy command not found"
+            assert "cp requirements-dev.txt.example requirements-dev.txt" in content, (
+                "Copy command not found"
+            )
             assert ".gitignore" in content, "Gitignore mention not found"
 
     def test_setup_script_handles_requirements(self):
@@ -99,8 +105,11 @@ docs = []
             # Run setup script in dry-run mode (just check syntax)
             result = subprocess.run(
                 ["bash", "-n", str(setup_script)],
-                check=False, capture_output=True,
+                check=False,
+                capture_output=True,
                 text=True,
             )
 
-            assert result.returncode == 0, f"Script syntax check failed: {result.stderr}"
+            assert result.returncode == 0, (
+                f"Script syntax check failed: {result.stderr}"
+            )
