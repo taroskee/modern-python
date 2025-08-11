@@ -174,29 +174,36 @@
 - Python 3.13新機能への即座対応
 
 ### タスク1.3.1: Docker CIワークフローの分離
-**ステータス:** ✅ **完了**
+**ステータス:** 🧪 **テスト中**（修正適用済み、動作確認待ち）
 
 **目的:** CI/CDリソースの最適化
 
-**計画:**
-- **新規ワークフロー作成**
-  - `.github/workflows/docker.yml`を新規作成
-  - Docker関連ファイル変更時のみ実行
-- **既存ci.ymlからDockerジョブを削除**
-  - dockerジョブを新しいワークフローに移動
-  - 依存関係の整理
-- **pathsフィルター設定**
-  - `.devcontainer/**`
-  - `**/Dockerfile*`
-  - `**/docker-compose*`
-  - `pyproject.toml`
-  - `requirements*.txt`
-- **実行タイミングの設定**
-  - push/PR時: 上記パスの変更時のみ
-  - workflow_dispatch: 手動実行可能
-  - schedule: 週次での依存関係更新確認（オプション）
+**実施内容:**
+- ✅ `.github/workflows/docker.yml`を新規作成
+- ✅ Docker関連ファイル変更時のみ実行するpathsフィルター設定
+- ✅ ci.ymlからdockerジョブを削除
+- ✅ 週次スケジュール実行の設定
 
-**期待効果:**
+**発見した問題（2025-08-11）:**
+- **エラー:** Trivyスキャンでイメージ名のパースエラー
+  ```
+  failed to parse the image name: could not parse reference: ghcr.io/Laie71/modern-python:main
+  ```
+- **原因:** `${{ github.repository }}` が `Laie71/modern-python` となり、大文字を含む
+- **影響:** GitHub Container Registry (GHCR) では全て小文字である必要がある
+
+**適用した修正（2025-08-11）:**
+- ✅ docker.ymlに小文字変換ステップを追加
+  ```yaml
+  - name: Set lowercase image name
+    id: image
+    run: |
+      echo "name=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+  ```
+- ✅ 全てのイメージ参照を `${{ steps.image.outputs.name }}` に変更
+- ✅ Trivy、テスト、SBOM生成の全ステップで修正を適用
+
+**期待効果（修正後）:**
 - CI実行時間: 通常のコード変更で約2分短縮
 - GitHub Actions無料枠: Docker実行を約80%削減
 - 開発速度: フィードバックループの高速化
@@ -323,9 +330,8 @@
 - ✅ .claudeディレクトリ整備
 
 ### 進行中/保留中タスク
-- ⏳ Pre-commitフック導入
+- ❌ Docker CIワークフロー分離（レジストリ名大文字問題の修正が必要）
 - ⏳ ブランチ保護ルール設定
-- ⏳ CI設定改善
 - ⏳ CONTRIBUTING.md作成
 - ⏳ Self-hosted Runner導入
 - ⏳ キャッシュ戦略最適化
@@ -340,10 +346,11 @@
 
 ## 次のステップ
 
+### 優先度：緊急
+1. Docker CIワークフローの修正（レジストリ名の小文字化）
+
 ### 優先度：高
-1. Pre-commitフックの導入
-2. CI設定の改善（continue-on-error削除）
-3. ブランチ保護ルールの設定
+2. ブランチ保護ルールの設定
 
 ### 優先度：中
 4. CONTRIBUTING.md作成
