@@ -85,6 +85,27 @@ main() {
         exit 1
     fi
     
+    # Install common team libraries
+    if [ -f "requirements-common.txt" ]; then
+        print_info "Installing common team libraries..."
+        uv pip install -r requirements-common.txt
+        print_success "Common libraries installed"
+    else
+        print_info "requirements-common.txt not found, skipping common libraries"
+    fi
+    
+    # Install personal development libraries
+    if [ -f "requirements-dev.txt" ]; then
+        print_info "Installing personal development libraries..."
+        uv pip install -r requirements-dev.txt
+        print_success "Personal libraries installed"
+    else
+        print_info "requirements-dev.txt not found, skipping personal libraries"
+        if [ -f "requirements-dev.txt.example" ]; then
+            print_info "Tip: Copy requirements-dev.txt.example to requirements-dev.txt to add personal libraries"
+        fi
+    fi
+    
     # Install pre-commit hooks
     print_info "Setting up pre-commit hooks..."
     if command -v pre-commit &> /dev/null; then

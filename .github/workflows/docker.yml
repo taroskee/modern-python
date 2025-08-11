@@ -104,10 +104,25 @@ jobs:
     
     - name: Test Docker image
       run: |
-        docker run --rm ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.meta.outputs.version }} python --version
-        docker run --rm ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.meta.outputs.version }} uv --version
-        docker run --rm ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.meta.outputs.version }} ruff --version
-        docker run --rm ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.meta.outputs.version }} pyright --version
+        IMAGE="${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ steps.meta.outputs.version }}"
+        echo "Testing Docker image: $IMAGE"
+        
+        # Test basic commands
+        docker run --rm $IMAGE python --version
+        docker run --rm $IMAGE uv --version
+        docker run --rm $IMAGE ruff --version
+        docker run --rm $IMAGE pyright --version
+        
+        # Test that common libraries are installed
+        echo "Testing common libraries installation..."
+        docker run --rm $IMAGE python -c "import pandas; print(f'pandas {pandas.__version__} OK')"
+        docker run --rm $IMAGE python -c "import numpy; print(f'numpy {numpy.__version__} OK')"
+        docker run --rm $IMAGE python -c "import requests; print(f'requests {requests.__version__} OK')"
+        docker run --rm $IMAGE python -c "import fastapi; print(f'fastapi {fastapi.__version__} OK')"
+        docker run --rm $IMAGE python -c "import sqlalchemy; print(f'sqlalchemy {sqlalchemy.__version__} OK')"
+        docker run --rm $IMAGE python -c "import pydantic; print(f'pydantic {pydantic.__version__} OK')"
+        
+        echo "All tests passed!"
     
     - name: Generate SBOM
       if: github.event_name != 'pull_request'

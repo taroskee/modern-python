@@ -90,13 +90,13 @@ RUN uv tool install ruff && \
 # Add UV tools to PATH
 ENV PATH="/root/.local/bin:${PATH}"
 
-# Pre-download common Python packages as root (optional optimization)
-# Note: Keeping minimal packages to avoid compatibility issues with Python 3.13
-RUN uv pip install --system \
-    requests \
-    python-dotenv \
-    click \
-    tqdm
+# Copy and install common team libraries
+COPY requirements-common.txt /tmp/requirements-common.txt
+
+# Pre-download common Python packages as root
+# Install from requirements-common.txt for consistency
+RUN uv pip install --system -r /tmp/requirements-common.txt && \
+    rm /tmp/requirements-common.txt
 
 # Create workspace directory
 RUN mkdir -p /workspace && \

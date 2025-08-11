@@ -481,6 +481,57 @@ jobs:
 - Public/Private設定とGitHub Actions権限の両方が重要
 - 権限問題は複数のレイヤーで発生する可能性がある
 
+## ユーザーライブラリ管理システム（2025-08-11実装）
+
+### 背景
+- pyproject.tomlだけでは個人のライブラリニーズに対応しづらい
+- requirements.txt形式は広く知られており直感的
+- チーム共通と個人用を分離したい
+
+### 実装内容
+1. **3層構造のライブラリ管理**
+   - `pyproject.toml`: プロジェクトコア依存関係
+   - `requirements-common.txt`: チーム共通ライブラリ（Gitで管理）
+   - `requirements-dev.txt`: 個人用ライブラリ（.gitignoreで除外）
+
+2. **自動インストール機能**
+   - `scripts/setup.sh`を更新し、3つのファイルから自動インストール
+   - DevContainer起動時に自動実行される
+
+3. **ドキュメントとテスト**
+   - README.mdとCLAUDE.mdに使用方法を記載
+   - test_setup.pyで動作を検証
+
+### 利点
+- **ユーザビリティ**: 慣れ親しんだrequirements.txt形式
+- **柔軟性**: チーム共通と個人用の分離管理
+- **互換性**: pyproject.tomlとの共存
+- **自動化**: DevContainer起動時の自動インストール
+
+## Docker CI統合（2025-08-11追加）
+
+### Dockerビルドへの統合
+**問題**: requirements-common.txtがDockerイメージに含まれていなかった
+
+**解決策**:
+1. **Dockerfileの修正**
+   ```dockerfile
+   # Copy and install common team libraries
+   COPY requirements-common.txt /tmp/requirements-common.txt
+   RUN uv pip install --system -r /tmp/requirements-common.txt && \
+       rm /tmp/requirements-common.txt
+   ```
+
+2. **docker.ymlの強化**
+   - ライブラリインポートテストを追加
+   - pandas, numpy, requests, fastapi, sqlalchemy, pydanticの動作確認
+   - ビルド時にライブラリが正しくインストールされることを検証
+
+**成果**:
+- Dockerイメージにチーム共通ライブラリが含まれるように
+- CI/CDでライブラリの完全性を自動検証
+- requirements-common.txt変更時の自動ビルド（pathトリガー設定済み）
+
 ## 今後の改善点
 
 ### 検討事項
@@ -490,9 +541,10 @@ jobs:
 - [ ] パフォーマンステストの自動化
 - [ ] ~~GitHub Container Registry権限設定の最適化~~ ✅ 解決済み
 - [ ] ブランチ保護ルールの設定
-- [ ] Pre-commitフックの導入
+- [ ] ~~Pre-commitフックの導入~~ ✅ 解決済み
 - [ ] 開発フローのドキュメント化（CONTRIBUTING.md）
-- [ ] CI品質チェックの厳格化（continue-on-errorの削除）
+- [ ] ~~CI品質チェックの厳格化（continue-on-errorの削除）~~ ✅ 解決済み
+- [ ] ~~ユーザーライブラリ管理システムの実装~~ ✅ 解決済み（2025-08-11）
 
 ### 技術的負債
 - ~~mypyのpydanticプラグイン設定エラー~~ ✅ 解決済み

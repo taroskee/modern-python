@@ -105,6 +105,50 @@ make docs
 make all
 ```
 
+### ライブラリ管理
+
+このプロジェクトでは、3つの方法でPythonライブラリを管理できます：
+
+#### 1. プロジェクト依存関係（pyproject.toml）
+プロジェクトのコア機能に必要なライブラリは `pyproject.toml` で管理されています。
+
+#### 2. チーム共通ライブラリ（requirements-common.txt）
+チーム全体で使用する共通ライブラリ：
+
+```bash
+# チーム共通ライブラリの確認
+cat requirements-common.txt
+
+# 新しいライブラリを追加（チーム全体に影響）
+echo "新しいライブラリ>=バージョン" >> requirements-common.txt
+git add requirements-common.txt
+git commit -m "feat: add 新しいライブラリ to common requirements"
+```
+
+#### 3. 個人用ライブラリ（requirements-dev.txt）
+個人の開発環境に必要なライブラリ：
+
+```bash
+# テンプレートから個人用ファイルを作成
+cp requirements-dev.txt.example requirements-dev.txt
+
+# 個人用ライブラリを追加
+echo "jupyter>=1.0.0" >> requirements-dev.txt
+
+# インストール（DevContainer起動時に自動実行）
+uv pip install -r requirements-dev.txt
+```
+
+**注意**: `requirements-dev.txt` は `.gitignore` に含まれているため、個人の設定はGitに保存されません。
+
+#### 自動インストール
+DevContainer起動時またはセットアップスクリプト実行時に、すべてのライブラリが自動的にインストールされます：
+
+```bash
+# 手動でセットアップスクリプトを実行
+bash scripts/setup.sh
+```
+
 ### 開発フロー
 
 1. **機能ブランチを作成**

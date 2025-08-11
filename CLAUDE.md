@@ -35,10 +35,35 @@ Modern Python開発環境は、Docker と VSCode DevContainer を使用した、
 - `make all` - すべての品質チェックを実行
 
 ### パッケージ管理
-- `uv sync` - 依存関係を同期
-- `uv pip install [package]` - パッケージをインストール
+
+#### 3つのライブラリ管理方法
+1. **pyproject.toml** - プロジェクトのコア依存関係
+2. **requirements-common.txt** - チーム共通ライブラリ（Gitで管理）
+3. **requirements-dev.txt** - 個人用ライブラリ（.gitignoreで除外）
+
+#### 基本コマンド
+- `uv sync` - pyproject.tomlの依存関係を同期
+- `uv pip install -r requirements-common.txt` - チーム共通ライブラリをインストール
+- `uv pip install -r requirements-dev.txt` - 個人用ライブラリをインストール
+- `uv pip install [package]` - 単一パッケージをインストール
 - `uv venv` - 仮想環境を作成
 - `source .venv/bin/activate` - 仮想環境を有効化
+
+#### 自動インストール
+- DevContainer起動時に `scripts/setup.sh` が自動実行
+- すべてのライブラリ（pyproject.toml、requirements-common.txt、requirements-dev.txt）が自動インストール
+
+#### 個人用ライブラリの追加方法
+```bash
+# テンプレートからコピー（初回のみ）
+cp requirements-dev.txt.example requirements-dev.txt
+
+# ライブラリを追加
+echo "jupyter>=1.0.0" >> requirements-dev.txt
+
+# インストール
+uv pip install -r requirements-dev.txt
+```
 
 ### Docker開発
 - `docker build -f .devcontainer/Dockerfile .` - Dockerイメージをビルド
