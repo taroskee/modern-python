@@ -42,7 +42,7 @@
 
 ```bash
 # 1. リポジトリをクローン
-git clone https://github.com/your-org/modern-python.git
+git clone https://github.com/taroskee/modern-python.git
 cd modern-python
 
 # 2. VSCodeで開く
@@ -231,7 +231,7 @@ MITライセンス - 詳細は[LICENSE](LICENSE)を参照してください。
 
 ## 📞 サポート
 
-問題が発生した場合は、[Issues](https://github.com/your-org/modern-python/issues)で報告してください。
+問題が発生した場合は、[Issues](https://github.com/taroskee/modern-python/issues)で報告してください。
 
 ---
 

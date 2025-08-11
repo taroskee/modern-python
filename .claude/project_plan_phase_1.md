@@ -83,7 +83,7 @@
 2. workflow に `packages: write` 権限を追加
 
 **成果:**
-- Docker image が `ghcr.io/laie71/modern-python:main` で公開
+- Docker image が `ghcr.io/taroskee/modern-python:main` で公開
 
 ### タスク1.1.3: CI品質チェックの問題発見
 **ステータス:** ✅ **完了**
@@ -187,9 +187,9 @@
 **発見した問題（2025-08-11）:**
 - **エラー:** Trivyスキャンでイメージ名のパースエラー
   ```
-  failed to parse the image name: could not parse reference: ghcr.io/Laie71/modern-python:main
+  failed to parse the image name: could not parse reference: ghcr.io/taroskee/modern-python:main
   ```
-- **原因:** `${{ github.repository }}` が `Laie71/modern-python` となり、大文字を含む
+- **原因:** `${{ github.repository }}` が `taroskee/modern-python` となり、ユーザー名に大文字を含む場合に問題が発生
 - **影響:** GitHub Container Registry (GHCR) では全て小文字である必要がある
 
 **適用した修正（2025-08-11）:**

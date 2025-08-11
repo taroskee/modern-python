@@ -329,7 +329,7 @@ make ci-watch      # 実行中のCIを監視
 
 **エラー内容**:
 ```
-ERROR: failed to push ghcr.io/laie71/modern-python:main: 
+ERROR: failed to push ghcr.io/taroskee/modern-python:main: 
 denied: installation not allowed to Create organization package
 ```
 
@@ -423,7 +423,7 @@ jobs:
   - Docker Image Build & Push: 1分47秒
 
 - ✅ **Docker Image公開成功**
-  - URL: `ghcr.io/laie71/modern-python:main`
+  - URL: `ghcr.io/taroskee/modern-python:main`
   - パブリックアクセス可能
 
 ### 解決した主要課題

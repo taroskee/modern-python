@@ -45,11 +45,11 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/modern-python"
+Homepage = "https://github.com/taroskee/modern-python"
 Documentation = "https://modern-python.readthedocs.io"
-Repository = "https://github.com/your-org/modern-python.git"
-Issues = "https://github.com/your-org/modern-python/issues"
-Changelog = "https://github.com/your-org/modern-python/blob/main/CHANGELOG.md"
+Repository = "https://github.com/taroskee/modern-python.git"
+Issues = "https://github.com/taroskee/modern-python/issues"
+Changelog = "https://github.com/taroskee/modern-python/blob/main/CHANGELOG.md"
 
 [project.scripts]
 modern-python = "src.main:app"
