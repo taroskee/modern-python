@@ -282,6 +282,48 @@
 - CI/CDパイプラインの説明
 - 品質管理プロセスの説明
 
+### タスク1.3.7: ユーザーライブラリ管理システムの実装
+**ステータス:** ⏳ **保留中**（優先度：中）
+
+**目的:** ユーザーが簡単にライブラリを追加できる仕組みの提供
+
+**背景:**
+- 現在はpyproject.tomlのみでライブラリ管理
+- ユーザーごとに異なるライブラリニーズがある
+- requirements.txt形式は広く知られており直感的
+
+**計画:**
+1. **requirements-common.txt** の作成
+   - チーム共通ライブラリ（pandas, numpy, requests等）
+   - Gitで管理、DevContainer起動時に自動インストール
+
+2. **requirements-dev.txt.example** の作成
+   - 個人用ライブラリのテンプレート
+   - 使用方法のコメント付き
+   - .gitignoreに requirements-dev.txt を追加
+
+3. **scripts/setup.sh** の更新
+   ```bash
+   # 共通ライブラリのインストール
+   if [ -f "requirements-common.txt" ]; then
+       uv pip sync requirements-common.txt
+   fi
+   
+   # 個人用ライブラリのインストール  
+   if [ -f "requirements-dev.txt" ]; then
+       uv pip sync requirements-dev.txt
+   fi
+   ```
+
+4. **ドキュメントの更新**
+   - README.md: ライブラリ追加方法のセクション追加
+   - CLAUDE.md: 開発コマンドセクションを更新
+
+**期待効果:**
+- ユーザビリティ向上: 慣れ親しんだrequirements.txt形式
+- 柔軟性: チーム共通と個人用の分離管理
+- 互換性: pyproject.tomlとの共存可能
+
 ---
 
 ## フェーズ1.4: パフォーマンス最適化（計画中）
@@ -336,6 +378,7 @@
 ### 進行中/保留中タスク
 - ⏳ ブランチ保護ルール設定
 - ⏳ CONTRIBUTING.md作成
+- ⏳ ユーザーライブラリ管理システム実装（requirements.txt対応）
 - ⏳ Self-hosted Runner導入
 - ⏳ キャッシュ戦略最適化
 - ⏳ Dockerイメージサイズ最適化
@@ -354,12 +397,13 @@
 2. CodeQL Action v3へのアップグレード（セキュリティスキャン修正）
 
 ### 優先度：中
-3. CONTRIBUTING.md作成
-4. Self-hosted Runner導入検討
+3. ユーザーライブラリ管理システムの実装（requirements.txt対応）
+4. CONTRIBUTING.md作成
+5. Self-hosted Runner導入検討
 
 ### 優先度：低
-5. キャッシュ戦略最適化
-6. Dockerイメージサイズ最適化
+6. キャッシュ戦略最適化
+7. Dockerイメージサイズ最適化
 
 ## リスクと課題
 
