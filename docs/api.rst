@@ -13,7 +13,7 @@ Core Modules
 Calculator Module
 ~~~~~~~~~~~~~~~~~
 
-.. automodule:: src.calculator
+.. automodule:: src.example_calculator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -26,7 +26,7 @@ Example Usage
 
 .. code-block:: python
 
-    from src.calculator import Calculator
+    from src.example_calculator import Calculator
     
     # Create calculator instance
     calc = Calculator()

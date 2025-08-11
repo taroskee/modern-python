@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from src.calculator import (
+from src.example_calculator import (
     Calculator,
     DivisionByZeroError,
     InvalidOperationError,

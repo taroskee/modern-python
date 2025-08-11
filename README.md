@@ -152,7 +152,7 @@ pytest
 pytest --cov=src --cov-report=html
 
 # 特定のテストのみ実行
-pytest tests/test_calculator.py -v
+pytest tests/test_example_calculator.py -v
 
 # マーカー付きテスト実行
 pytest -m "not slow"
