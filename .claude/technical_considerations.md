@@ -360,18 +360,21 @@ uses: github/codeql-action/upload-sarif@v2
 uses: github/codeql-action/upload-sarif@v3
 ```
 
-**重要**: CodeQL Action v3には`security-events: write`権限が必要
+**重要**: CodeQL Action v3には以下の権限がすべて必要（GitHub issue #2117で確認）
 ```yaml
 permissions:
-  contents: read
-  packages: write
-  security-events: write  # ← 必須
+  contents: read          # コードのチェックアウト用
+  packages: write         # DockerイメージのGHCRプッシュ用
+  security-events: write  # SARIFファイルのアップロード用
+  actions: read           # workflow実行情報の取得用（v3で必須）
 ```
 
-**エラー内容**: 権限がない場合のエラー
+**エラー内容**: `actions: read`権限がない場合のエラー
 ```
 Resource not accessible by integration - https://docs.github.com/rest/actions/workflow-runs#get-a-workflow-run
 ```
+
+**注意**: CodeQL Action v2からv3への移行時、`actions: read`権限の追加を忘れやすい
 
 **影響範囲**: Trivyスキャン結果のGitHub Security tabへのアップロード
 
