@@ -137,7 +137,7 @@
 - `project_plan_phase_1.md` - プロジェクト計画（本ファイル）
 
 ### タスク1.2.5: GitHub Pagesの有効化と公開
-**ステータス:** 🔄 **進行中**
+**ステータス:** ✅ **完了**（2025-08-11）
 
 **目的:** プロジェクトドキュメントの自動公開
 
@@ -154,10 +154,16 @@
 2. **初回デプロイのトリガー**（2025-08-11実施）
    - ✅ ドキュメントの更新を行いmainブランチへpush
    - ✅ GitHub Pagesバッジの追加
+   - ✅ README.mdにドキュメントセクション追加
 
-3. **動作確認**
-   - デプロイ成功の確認（進行中）
-   - https://taroskee.github.io/modern-python/ でアクセス確認
+3. **動作確認**（2025-08-11完了）
+   - ✅ デプロイ成功の確認
+   - ✅ https://taroskee.github.io/modern-python/ でアクセス確認（HTTP 200）
+
+**成果:**
+- ドキュメントが自動デプロイされるようになった
+- mainブランチへのpushで自動更新
+- PRプレビュー機能も利用可能（Netlify連携）
 
 **URL:**
 - Documentation: https://taroskee.github.io/modern-python/
@@ -396,13 +402,13 @@
 - ✅ GHCR権限問題解決
 - ✅ ドキュメント整備（README、technical_considerations、C4図）
 - ✅ .claudeディレクトリ整備
+- ✅ GitHub Pagesの有効化と公開（2025-08-11）
 - ✅ Pyrightへの移行
 - ✅ Docker CIワークフロー分離（大文字小文字問題解決済み）
 - ✅ Pre-commitフック導入
 - ✅ CI設定の改善（continue-on-error削除）
 
 ### 進行中/保留中タスク
-- 🔄 GitHub Pagesの有効化と公開
 - ⏳ ブランチ保護ルール設定
 - ⏳ CONTRIBUTING.md作成
 - ⏳ ユーザーライブラリ管理システム実装（requirements.txt対応）
@@ -413,7 +419,7 @@
 ### 達成指標
 - **基盤構築**: 100% 完了
 - **CI/CDパイプライン**: 100% 完了
-- **ドキュメント**: 90% 完了（GitHub Pages公開中、CONTRIBUTING.md が未作成）
+- **ドキュメント**: 95% 完了（GitHub Pages公開完了、CONTRIBUTING.md が未作成）
 - **品質管理**: 75% 完了（ブランチ保護ルールが未実装）
 - **パフォーマンス**: 0% 完了（計画段階）
 
