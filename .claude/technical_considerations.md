@@ -376,7 +376,19 @@ Resource not accessible by integration - https://docs.github.com/rest/actions/wo
 
 **注意**: CodeQL Action v2からv3への移行時、`actions: read`権限の追加を忘れやすい
 
-**影響範囲**: Trivyスキャン結果のGitHub Security tabへのアップロード
+**重要な制限**: GitHub Code scanningは以下の場合のみ利用可能
+- GitHub Enterprise プラン
+- パブリックリポジトリ（GitHub Advanced Security有効時）
+- Organization所有のプライベートリポジトリ（Advanced Security購入時）
+
+**無料プランでの対処法**: 
+```yaml
+- name: Upload Trivy results to GitHub Security tab
+  uses: github/codeql-action/upload-sarif@v3
+  continue-on-error: true  # Code scanning未設定でも失敗しない
+```
+
+**影響範囲**: Trivyスキャン結果のGitHub Security tabへのアップロード（Code scanning有効時のみ）
 
 ### Sphinx doctestビルダー要件
 **問題**: Documentation CI実行時にdoctestビルダーが見つからない
