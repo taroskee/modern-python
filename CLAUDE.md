@@ -1,4 +1,4 @@
-# CLAUDE.md
+# Modern Python
 
 このファイルは、Claude Code（claude.ai/code）がこのリポジトリ内のコードを扱う際のガイドラインを提供します。
 
