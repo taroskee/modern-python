@@ -14,7 +14,6 @@
 
 ## 🚀 特徴
 
-- **OS非依存**: Docker ContainerによりWindows/macOS/Linuxで統一された開発体験
 - **高速実行**: Rust製ツール（uv, Ruff）による圧倒的な実行速度
 - **即座の開発開始**: VSCode DevContainerで環境構築不要
 - **品質保証**: TDD実践とCI/CDパイプラインによる継続的な品質管理

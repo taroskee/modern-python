@@ -9,12 +9,13 @@ ENV PYTHONUNBUFFERED=1 \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    UV_SYSTEM_PYTHON=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     # Build essentials
+    bash \
+    zsh \
     build-essential \
     gcc \
     g++ \
@@ -53,6 +54,8 @@ RUN apt-get update && apt-get install -y \
     # Clean up
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Install Node.js LTS for Pyright
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
@@ -126,6 +129,3 @@ RUN git config --global init.defaultBranch main && \
 
 # Expose common ports
 EXPOSE 8000 8080 8888 5000 3000
-
-# Default command
-CMD ["/bin/bash"]
